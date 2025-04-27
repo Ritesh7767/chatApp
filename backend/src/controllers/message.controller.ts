@@ -44,21 +44,25 @@ export const sendMessage = asyncHandler(async (req, res) => {
 export const getMessage = asyncHandler(async(req, res) => {
     
     const receiverId = req.query.id as string
+    const senderId = req.id.toString()
 
     if(!receiverId) throw new ApiError(401, "Invalid Request")
+    
+    console.log(receiverId, senderId)
         
     let conversation = await prisma.conversation.findFirst({
     where: {
         OR: [
-                {person1Id: req.id, person2Id: receiverId},
-                {person1Id: receiverId, person2Id: req.id}
+                {person1Id: senderId, person2Id: receiverId},
+                {person1Id: receiverId, person2Id: senderId}
             ]
         }
     })
+
     if(!conversation) {
         conversation = await prisma.conversation.create({
             data: {
-                person1Id: req.id,
+                person1Id: senderId,
                 person2Id: receiverId
             }
         })

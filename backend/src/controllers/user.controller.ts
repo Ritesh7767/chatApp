@@ -7,7 +7,7 @@ import { generateAccessToken, generateRefreshToken } from "../utils/generateToke
 import { userLoginValidation, userRegisterValidation } from "../zod/user.zod";
 
 export const userRegister = asyncHandler(async (req, res) => {
-    const {fullname, email, username, password} = req.body
+    const {fullname, email, username, password, profile, gender} = req.body
     
     const isDataCorrect = userRegisterValidation.safeParse(req.body)
     if(!isDataCorrect.success) throw new ApiError(401, "Invalid Credential type", isDataCorrect.error?.message)
@@ -17,7 +17,15 @@ export const userRegister = asyncHandler(async (req, res) => {
 
     
     const hashedPassword = await hashPassword(password)
-    const user = await prisma.user.create({data: {fullname, email, username, password: hashedPassword}})
+    
+    const user = await prisma.user.create({data: {
+        fullname,
+        email,
+        username,
+        password: hashedPassword,
+        profile,
+        gender
+    }})
     
     res.status(201).json(new ApiResponse(201, user, "User registered successfully"))
 })

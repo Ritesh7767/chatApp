@@ -1,4 +1,4 @@
-import express, {Request, Response} from 'express'
+import express, {Request, Response, NextFunction} from 'express'
 import cookieParser from 'cookie-parser'
 
 const app = express()
@@ -11,9 +11,6 @@ app.get("/", (req, res) => {
     res.send("hi from server")
 })
 
-app.listen(3000, () => console.log("server is listening at port", 3000))
-
-
 import userRouter from './routers/user.router'
 app.use("/api/v1/user", userRouter)
 
@@ -22,7 +19,8 @@ app.use("/api/v1/message", messageRouter)
 
 import ApiError from './utils/apiError'
 import ApiResponse from './utils/apiResponse'
-app.use((error: Error, req: Request, res: Response) => {
+
+app.use((error: Error, req: Request, res: Response, next: NextFunction) => {
     let data;
     if(error instanceof ApiError){
         data = {
@@ -34,7 +32,7 @@ app.use((error: Error, req: Request, res: Response) => {
     } else {
         data = {
             status: 500,
-            message: "Internal Server Error",
+            message: error.message,
             data: {},
             success: false
         }
