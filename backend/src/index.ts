@@ -4,7 +4,8 @@ import http from 'http'
 
 dotenv.config()
 
-const PORT = process.env.PORT || 3000
+const PORT = process.env.PORT || 8080
 
-const server = http.createServer(app)
-server.listen(PORT, () => console.log("Server is listening at port", PORT))
+// const server = http.createServer(app)
+// server.listen(PORT, () => console.log("Server is listening at port", PORT))
+app.listen(PORT, () => console.log("server is listening at port", PORT))
